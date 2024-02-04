@@ -10,20 +10,24 @@ def get_cats_info(path):
 
     pets_list = []
     try:
+
         #створюємо список з рядків в файлі
         with open( path, 'r+') as base:
             raw_list = [el.strip() for el in base.readlines()]
+
         #перевіряємо. чи файл не пустий 
         if len(raw_list) > 0 :
             #Створюємо список з id кожної тваринки
             for i in raw_list:
                 pattern = r"^[^,]+"
                 id = "".join(re.findall(pattern, i))
+
                 #перевіряємо чи відповідає id умові
                 if len(id) == 24 :
                     id_info.append(id)
                 else :
                     return f"Перевірьте правильність вказання id в записі {i}"
+                
             #Створюємо список з імена кожної тваринки, що знаходяться між комами 
             for i in raw_list:
                 pattern_2 = r',([^,\s]+),'                            
@@ -33,21 +37,26 @@ def get_cats_info(path):
                     name_info.append(name)
                 else :
                     return f"Здається, ви не вказали ім\'я котика в записі {i}"
+                
             #Створюємо список для віку котиків, що знаходяться в кінці рядку та мають тільки цифри 
             for i in raw_list :
                 pattern_3 = r'[\s,](\d+)$'
                 age = "".join(re.findall(pattern_3, i))
-                #перевіряємо, чи вказали вік для 
+
+                #перевіряємо, чи вказали вік для котиків
                 if len(age) > 0 :
                     age_info.append(age)
                 else:
                     return f"здається ви не вказали вік котика в записі {i}" 
+                
             #Створюємо список словників, що складаються з id, імені та віку кожного котика. 
             for i in range(len(id_info)) :
                 pets_list.append({"id": id_info[i], "name": name_info[i], "age_info": age_info[i]})
+
+            #повертаємо значення
+            return pets_list
         else :
-            return "Перевірте вміст файлу"
-        return pets_list
+            return "Перевірте вміст файлу" 
     except: 
         return "Перевірте наявність файлу та шлях до нього" 
 
