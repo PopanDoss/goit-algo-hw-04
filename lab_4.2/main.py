@@ -1,65 +1,31 @@
-from  pathlib import Path 
-import re
+from  pathlib import Path
+import os 
 
-#Створюємо функцію яка буде опрацьовувати файл 
 def get_cats_info(path):
-    #
-    id_info =[]
-    name_info = []
-    age_info = []
 
-    pets_list = []
-    try:
-
-        #створюємо список з рядків в файлі
+    cat_list = [] 
+    #Перевіряємо шлях до файлу 
+    if os.path.exists(path):
+        
         with open( path, 'r+') as base:
             raw_list = [el.strip() for el in base.readlines()]
 
-        #перевіряємо. чи файл не пустий 
-        if len(raw_list) > 0 :
-            #Створюємо список з id кожної тваринки
+        #перевіряємо чи файл пустий 
+        if len(raw_list) > 0:
+            
+            #Створюємо список словників з даних в файлі
             for i in raw_list:
-                pattern = r"^[^,]+"
-                id = "".join(re.findall(pattern, i))
+                cat = i.split(',') 
+                cat_list.append({'id': cat[0], 'name': cat[1], 'age': cat[2]})
 
-                #перевіряємо чи відповідає id умові
-                if len(id) == 24 :
-                    id_info.append(id)
-                else :
-                    return f"Перевірьте правильність вказання id в записі {i}"
-                
-            #Створюємо список з імена кожної тваринки, що знаходяться між комами 
-            for i in raw_list:
-                pattern_2 = r',([^,\s]+),'                            
-                name = "".join(re.findall(pattern_2, i))
-                #перевіряємо, чи вказане ім"я
-                if len(name) > 0 : 
-                    name_info.append(name)
-                else :
-                    return f"Здається, ви не вказали ім\'я котика в записі {i}"
-                
-            #Створюємо список для віку котиків, що знаходяться в кінці рядку та мають тільки цифри 
-            for i in raw_list :
-                pattern_3 = r'[\s,](\d+)$'
-                age = "".join(re.findall(pattern_3, i))
-
-                #перевіряємо, чи вказали вік для котиків
-                if len(age) > 0 :
-                    age_info.append(age)
-                else:
-                    return f"здається ви не вказали вік котика в записі {i}" 
-                
-            #Створюємо список словників, що складаються з id, імені та віку кожного котика. 
-            for i in range(len(id_info)) :
-                pets_list.append({"id": id_info[i], "name": name_info[i], "age_info": age_info[i]})
-
-            #повертаємо значення
-            return pets_list
-        else :
-            return "Перевірте вміст файлу" 
-    except: 
-        return "Перевірте наявність файлу та шлях до нього" 
+            return cat_list
+        else:
+            return 'Перевірте всім файлу'
+    else:
+        return 'Перевірте шлях до файлу'
+    
+        
 
 
-cats_info = get_cats_info("D:\\My_repo\\First_repo\\lab_4.2\\base.txt")
+cats_info = get_cats_info("D:/My_repo/First_repo/lab_4.2/base.txt")
 print(cats_info)
